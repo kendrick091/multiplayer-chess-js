@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io(`https://multiplayer-chess-js.onrender.com`);
 
 let roomId = "";
 let playerColor = "";
