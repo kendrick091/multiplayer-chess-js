@@ -1,6 +1,7 @@
 const socket = io(`https://multiplayer-chess-js.onrender.com`);
 
-let roomId = "";
+let roomId = Math.random().toString(36).substring(2,8);
+document.getElementById("roomInput").value = roomId;
 let playerColor = "";
 
 // receive move from opponent
