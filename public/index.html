@@ -3,37 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>MP-Chess</title>
+    <link rel="stylesheet" href="style.css">
     <!-- <script src="/socket.io/socket.io.js"></script> -->
 </head>
-<style>
-    #board{
-        display: grid;
-        grid-template-columns: repeat(8, 50px);
-        width: 100%;
-        min-width: 380px;
-        margin: 40px auto;
-    }
-    .square{
-        width: 50px;
-        height: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 35px;
-        cursor: pointer;
-    }
-    .light{
-        background: #f0d9b5;
-    }
-    .dark{
-        background: #b58863;
-    }
-</style>
 <body>
-    <input id="roomInput" placeholder="Room ID">
-<button onclick="createRoom()">Create Room</button>
-<button onclick="joinRoom()">Join Room</button>
+    <div class="button-div">
+        <div class="computer-btn-div">
+        <button class="game-btn" onclick="startComputerGame()">Play vs Computer</button>
+        </div>
+
+        <div class="multiplayer-btn-div">
+        <input id="roomInput" placeholder="Room ID">
+        <button class="game-btn" onclick="createRoom()">Create Room</button>
+        <button class="game-btn" onclick="joinRoom()">Join Room</button>
+        </div>
+
+        <div class="restart-btn-div">
+        <button onclick="restartGame()">Restart Game</button>
+        </div>
+    </div>
 
     <h2 id="status">WHITE to move</h2>
     <button id="restartBtn" style="display:none;">Restart Game</button>
@@ -42,5 +31,7 @@
 
 </body>
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="computer.js"></script>
+<script src="ux.js"></script>
 <script src="script.js"></script>
 </html>

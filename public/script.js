@@ -26,11 +26,13 @@ socket.on("move", (move) => {
 });
 
 function createRoom(){
+  disableGameButtons();
   roomId = document.getElementById("roomInput").value;
   socket.emit("createRoom", roomId);
 }
 
 function joinRoom(){
+  disableGameButtons();
   roomId = document.getElementById("roomInput").value;
   socket.emit("joinRoom", roomId);
 }
@@ -42,6 +44,19 @@ socket.on("playerColor", (color)=>{
 socket.on("startGame", () => {
   document.getElementById("status").textContent = "Game Started!";
 });
+
+// ===================================
+// Chess logic and UI code
+let playVsComputer = false;
+let computerColor = "black";
+
+function startComputerGame() {
+  disableGameButtons();
+  playVsComputer = true;
+  playerColor = "white";
+  computerColor = "black";
+  document.getElementById("status").textContent = "Playing vs Computer";
+}
 
 const board = [
   ["r","n","b","q","k","b","n","r"],
@@ -187,6 +202,9 @@ handlePromotion(row, col);
   };
 
   switchTurn();
+  if (playVsComputer && currentTurn === computerColor) {
+  setTimeout(makeComputerMove, 500);
+}
   checkGameStatus();
 }
   selected = null;
@@ -557,5 +575,10 @@ function showDraw() {
 document.getElementById("restartBtn").addEventListener("click", () => {
   location.reload();
 });
+
+function disableGameButtons() {
+  const buttons = document.querySelectorAll(".game-btn");
+  buttons.forEach(btn => btn.disabled = true);
+}
 
 renderBoard();
