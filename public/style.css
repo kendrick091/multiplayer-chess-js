@@ -37,6 +37,29 @@
     width: 100px;
 }
 
+.game-container{
+    /* display:flex; */
+    align-items:center;
+    justify-content:center;
+    gap:20px;
+}
+
+.captured-box{
+    width:300px;
+    min-height:100px;
+    background:#dfdddd;
+    border-radius:6px;
+    padding:10px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    font-size:24px;
+}
+
+.captured-box span{
+    width:24px;
+}
+
 /* Chess Board */
 #board{
     display: grid;

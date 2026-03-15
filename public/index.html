@@ -27,7 +27,15 @@
     <h2 id="status">WHITE to move</h2>
     <button id="restartBtn" style="display:none;">Restart Game</button>
 
-    <div id="board"></div>
+    <div class="game-container">
+
+        <div id="capturedBlack" class="captured-box"></div>
+
+        <div id="board"></div>
+
+        <div id="capturedWhite" class="captured-box"></div>
+
+    </div>
 
 </body>
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>

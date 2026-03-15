@@ -7,6 +7,19 @@ let playerColor = "";
 // receive move from opponent
 socket.on("move", (move) => {
 
+  const capturedPiece = board[move.toRow][move.toCol];
+
+if (capturedPiece !== "") {
+
+  if (capturedPiece === capturedPiece.toUpperCase()) {
+    capturedWhite.push(capturedPiece);
+  } else {
+    capturedBlack.push(capturedPiece);
+  }
+
+  renderCapturedPieces();
+}
+
   const piece = board[move.fromRow][move.fromCol];
 
   board[move.toRow][move.toCol] = piece;
@@ -81,6 +94,9 @@ let selected = null; // store selected piece position
 let color = "white"; // track current turn
 let lastMove = null;
 let possibleMoves = [];
+// for captured pieces
+let capturedWhite = [];
+let capturedBlack = [];
 
 // ===================================
 // Board rendering and click handling
@@ -173,10 +189,24 @@ if (playerColor === "black" && !isBlackPiece) return;
 
   const piece = board[selected.row][selected.col];
 
+  //move logic
   if (
   isValidMove(piece, selected.row, selected.col, row, col) &&
   !moveLeavesKingInCheck(selected.row, selected.col, row, col)
 ) {
+  const capturedPiece = board[row][col];
+
+if (capturedPiece !== "") {
+
+  if (capturedPiece === capturedPiece.toUpperCase()) {
+    capturedWhite.push(capturedPiece);
+  } else {
+    capturedBlack.push(capturedPiece);
+  }
+
+  renderCapturedPieces();
+}
+
   board[row][col] = piece;
   board[selected.row][selected.col] = "";
 
@@ -580,6 +610,30 @@ document.getElementById("restartBtn").addEventListener("click", () => {
 function disableGameButtons() {
   const buttons = document.querySelectorAll(".game-btn");
   buttons.forEach(btn => btn.disabled = true);
+}
+
+// ===============================
+// for knowing captured pieces
+function renderCapturedPieces(){
+
+  const whiteBox = document.getElementById("capturedWhite");
+  const blackBox = document.getElementById("capturedBlack");
+
+  whiteBox.innerHTML = "";
+  blackBox.innerHTML = "";
+
+  capturedWhite.forEach(p=>{
+    const span = document.createElement("span");
+    span.textContent = pieces[p];
+    whiteBox.appendChild(span);
+  });
+
+  capturedBlack.forEach(p=>{
+    const span = document.createElement("span");
+    span.textContent = pieces[p];
+    blackBox.appendChild(span);
+  });
+
 }
 
 renderBoard();
