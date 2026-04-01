@@ -57,6 +57,8 @@ socket.on("playerColor", (color)=>{
 
 socket.on("startGame", () => {
   document.getElementById("status").textContent = "Game Started!";
+  // Start timer for multiplayer game
+  startTimer();
 });
 
 // ===================================
@@ -70,6 +72,8 @@ function startComputerGame() {
   playerColor = "white";
   computerColor = "black";
   document.getElementById("status").textContent = "Playing vs Computer";
+  // Start timer for computer game
+  startTimer();
 }
 
 const board = [
@@ -98,6 +102,62 @@ let possibleMoves = [];
 let capturedWhite = [];
 let capturedBlack = [];
 
+// =====================
+// Chess Clock
+
+let whiteTime = 15 * 60; // 15 minutes in seconds
+let blackTime = 15 * 60;
+
+let timerInterval = null;
+
+function formatTime(seconds){
+  const min = Math.floor(seconds / 60);
+  const sec = seconds % 60;
+  return `${min}:${sec < 10 ? "0" : ""}${sec}`;
+}
+
+function updateTimerDisplay(){
+  document.getElementById("whiteTime").textContent = formatTime(whiteTime);
+  document.getElementById("blackTime").textContent = formatTime(blackTime);
+}
+
+function startTimer(){
+
+  if(timerInterval) clearInterval(timerInterval);
+
+  timerInterval = setInterval(()=>{
+
+    if(currentTurn === "white"){
+      whiteTime--;
+    } else {
+      blackTime--;
+    }
+
+    updateTimerDisplay();
+
+    checkTimeOut();
+
+  },1000);
+}
+
+function checkTimeOut(){
+
+  if(whiteTime <= 0){
+    clearInterval(timerInterval);
+    whiteTime = 0;
+    updateTimerDisplay();
+    endGameByTimeout("black");
+    return;
+  }
+
+  if(blackTime <= 0){
+    clearInterval(timerInterval);
+    blackTime = 0;
+    updateTimerDisplay();
+    endGameByTimeout("white");
+    return;
+  }
+}
 // ===================================
 // Board rendering and click handling
 
@@ -158,6 +218,8 @@ if (blackInCheck && board[row][col] === "k") {
 let currentTurn = "white";
 
 function handleClick(e) {
+  if(whiteTime <= 0 || blackTime <= 0) return;
+  
   // 🔒 Prevent moving when it's not your turn
   if (playerColor && playerColor !== currentTurn) {
     return;
@@ -254,6 +316,7 @@ function isCorrectTurn(piece) {
 
 function switchTurn() {
   currentTurn = currentTurn === "white" ? "black" : "white";
+  updateTimerDisplay();
   console.log("Turn:", currentTurn);
 }
 
@@ -586,20 +649,42 @@ function disableBoard() {
 // Show winner message
 function showWinner(winnerColor) {
 
+  clearInterval(timerInterval);
+  disableBoard();
+
   const status = document.getElementById("status");
   status.textContent = "CHECKMATE! " + winnerColor + " Wins! ♟️🏆";
 
+  document.getElementById("restartBtn").style.display = "inline-block";
+}
+
+// Show timeout winner message
+function endGameByTimeout(winner){
+
+  clearInterval(timerInterval);
+
   disableBoard();
+
+  const status = document.getElementById("status");
+
+  if(winner === "white"){
+    status.textContent = "Black ran out of time ⏱️. White Wins! ♟️🏆";
+  }else{
+    status.textContent = "White ran out of time ⏱️. Black Wins! ♟️🏆";
+  }
 
   document.getElementById("restartBtn").style.display = "inline-block";
 }
 
 // Show draw message
 function showDraw() {
+
+  clearInterval(timerInterval);
+  disableBoard();
+
   const status = document.getElementById("status");
   status.textContent = "STALEMATE! It's a Draw 🤝";
 
-  disableBoard();
   document.getElementById("restartBtn").style.display = "inline-block";
 }
 
@@ -636,4 +721,5 @@ function renderCapturedPieces(){
 
 }
 
+updateTimerDisplay();
 renderBoard();
